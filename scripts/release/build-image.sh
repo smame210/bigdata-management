@@ -58,13 +58,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-echo "[1/4] Build frontend dist (BASE_URL=$BASE_URL)"
+echo "[1/4] Install frontend dependencies"
+(
+  cd "$ROOT_DIR"
+  pnpm -C bigdata-ui install
+)
+
+echo "[2/4] Build frontend dist (BASE_URL=$BASE_URL)"
 (
   cd "$ROOT_DIR"
   VITE_SERVICE_BASE_URL="$BASE_URL" pnpm -C bigdata-ui build
 )
 
-echo "[2/4] Sync dist to server static resources"
+echo "[3/4] Sync dist to server static resources"
 rm -rf "$ROOT_DIR/bigdata-server/src/main/resources/static"
 mkdir -p "$ROOT_DIR/bigdata-server/src/main/resources/static"
 cp -R "$ROOT_DIR/bigdata-ui/dist/." "$ROOT_DIR/bigdata-server/src/main/resources/static/"
