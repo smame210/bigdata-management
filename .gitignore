@@ -19,3 +19,4 @@ bigdata-server/src/main/resources/static
 .tmp/*
 .vscode
 .idea
+_design/
