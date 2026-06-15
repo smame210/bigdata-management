@@ -5,7 +5,7 @@ spring:
   jackson:
     time-zone: Asia/Shanghai
   datasource:
-    url: jdbc:postgresql://${DS_HOST:localhost:5432}/bigdata_management
+    url: jdbc:postgresql://${DS_HOST:localhost:5432}/${DS_NAME:bigdata_management}
     username: ${DS_USERNAME:postgres}
     password: ${DS_PASSWORD:postgres}
     druid:

@@ -134,6 +134,7 @@ docker run -d \
 | 环境变量 | 说明 | 默认值 |
 |---------|------|--------|
 | `DS_HOST` | 数据库地址（host:port） | `localhost:5432` |
+| `DS_NAME` | 数据库名 | `bigdata_management` |
 | `DS_USERNAME` | 数据库用户名 | `postgres` |
 | `DS_PASSWORD` | 数据库密码 | `postgres` |
 | `USER_DEFAULT_PASSWORD` | 新增用户默认密码 | `Dts@123456` |
