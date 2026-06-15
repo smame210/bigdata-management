@@ -7,6 +7,7 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.bigdata.server.exception.DatabaseInitializationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import jakarta.annotation.PostConstruct;
 import java.io.BufferedReader;
@@ -30,6 +31,9 @@ public class DatabaseInitialize {
 
     @Value("${spring.datasource.password}")
     private String password;
+
+    @Value("${bigdata.user.default-password}")
+    private String defaultPassword;
 
     @PostConstruct
     private void initDatabase() {
@@ -100,6 +104,13 @@ public class DatabaseInitialize {
                         break;
                     default:
                         throw new DatabaseInitializationException("不支持的[" + databasePlatform + "]数据源类型！");
+                }
+
+                // 用配置的默认密码覆盖种子管理员密码
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                try (Statement stmt = dbConnection.createStatement()) {
+                    String encodedPassword = encoder.encode(defaultPassword);
+                    stmt.execute("UPDATE public.\"user\" SET password = '" + encodedPassword + "' WHERE user_name = 'admin'");
                 }
             }
         } catch (SQLException e) {
