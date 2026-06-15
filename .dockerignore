@@ -1,0 +1,15 @@
+.git
+.gitignore
+.gitattributes
+node_modules
+**/node_modules
+bigdata-api/target
+bigdata-flink/target
+bigdata-scheduler/target
+bigdata-alert/target
+bigdata-ui/node_modules
+bigdata-ui/dist
+**/.DS_Store
+**/*.md
+**/*.md5
+**/*.sha1

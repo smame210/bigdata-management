@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bigdata.server.mapper.TaskScheduleMapper">
+
+
+    <select id="page" resultType="org.bigdata.server.bean.entity.TaskSchedule">
+        select
+            ts.id,
+            ts.task_id,
+            ti.task_name,
+            ci.cluster_name,
+            ti.engine_type,
+            ts.schedule_name,
+            ts.schedule_status,
+            ts.schedule_frequency,
+            ts.create_time,
+            ts.update_time,
+            ts.is_deleted
+        from task_schedule ts
+        left join task_info ti on ti.id = ts.task_id
+        left join cluster_info ci on ci.id = ti.cluster_id
+        <where>
+            ts.is_deleted = 0
+            <if test="params.taskName != null and params.taskName != ''">
+                and ti.task_name = CONCAT('%', #{params.taskName}, '%')
+            </if>
+            <if test="params.engineType != null and params.engineType != ''">
+                and ti.engine_type = #{params.engineType}
+            </if>
+            <if test="params.clusterName != null and params.clusterName != ''">
+                and ci.cluster_name like CONCAT('%', #{params.clusterName}, '%')
+            </if>
+            <if test="params.scheduleName != null and params.scheduleName != ''">
+                and ts.schedule_name like CONCAT('%', #{params.scheduleName}, '%')
+            </if>
+            <if test="params.scheduleStatus != null">
+                and ts.schedule_status = #{params.scheduleStatus}
+            </if>
+        </where>
+        order by ts.update_time
+    </select>
+</mapper>

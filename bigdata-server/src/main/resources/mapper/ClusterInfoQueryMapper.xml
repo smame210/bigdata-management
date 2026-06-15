@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bigdata.server.mapper.ClusterInfoMapper">
+
+    <select id="queryClusterByPage" resultType="org.bigdata.server.bean.entity.ClusterInfo">
+        SELECT
+            id,
+            cluster_name,
+            cluster_type,
+            cluster_status,
+            health_status,
+            health_checked_at,
+            metadata,
+            create_time,
+            update_time,
+            is_deleted
+        FROM cluster_info
+        <where>
+            is_deleted = 0
+            <if test="query.clusterName != null and query.clusterName != ''">
+                AND cluster_name LIKE CONCAT('%', #{query.clusterName}, '%')
+            </if>
+            <if test="query.clusterType != null and query.clusterType != ''">
+                AND cluster_type = #{query.clusterType}
+            </if>
+            <if test="query.clusterStatus != null">
+                AND cluster_status = #{query.clusterStatus}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

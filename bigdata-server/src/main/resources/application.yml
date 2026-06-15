@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  jackson:
+    time-zone: Asia/Shanghai
+  datasource:
+    url: jdbc:postgresql://${DS_HOST:localhost:5432}/bigdata_management
+    username: ${DS_USERNAME:postgres}
+    password: ${DS_PASSWORD:postgres}
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+
+  quartz:
+    job-store-type: jdbc
+    wait-for-jobs-to-complete-on-shutdown: true
+    overwrite-existing-jobs: true
+    jdbc:
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: scheduler
+            instanceId: AUTO
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+            tablePrefix: QRTZ_
+            isClustered: true
+            clusterCheckinInterval: 10000
+            useProperties: false
+          threadPool:
+            threadCount: 25
+            threadPriority: 5
+            class: org.quartz.simpl.SimpleThreadPool
+
+file:
+  upload:
+    path: ./cluster/file
+
+bigdata:
+  user:
+    default-password: ${USER_DEFAULT_PASSWORD:Dts@123456}

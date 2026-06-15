@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bigdata.server.mapper.TaskInfoMapper">
+    
+    <select id="queryTaskByPage" resultType="org.bigdata.server.bean.entity.TaskInfo">
+        SELECT
+            id,
+            task_instance_id,
+            task_name,
+            engine_type,
+            task_type,
+            task_status,
+            task_mode,
+            cluster_id,
+            create_time,
+            update_time,
+            is_deleted
+        FROM task_info
+        <where>
+            is_deleted = 0
+            <if test="query.taskName != null and query.taskName != ''">
+                AND task_name LIKE CONCAT('%', #{query.taskName}, '%')
+            </if>
+            <if test="query.engineType != null and query.engineType != ''">
+                AND engine_type = #{query.engineType}
+            </if>
+            <if test="query.taskStatus != null">
+                AND task_status = #{query.taskStatus}
+            </if>
+            <if test="query.taskMode != null and query.taskMode != ''">
+                AND task_mode = #{query.taskMode}
+            </if>
+            <if test="query.clusterId != null">
+                AND cluster_id = #{query.clusterId}
+            </if>
+            <if test="query.createTimeStart != null">
+                AND create_time >= #{query.createTimeStart}
+            </if>
+            <if test="query.createTimeEnd != null">
+                AND create_time &lt;= #{query.createTimeEnd}
+            </if>
+        </where>
+        ORDER BY update_time DESC
+    </select>
+
+</mapper>

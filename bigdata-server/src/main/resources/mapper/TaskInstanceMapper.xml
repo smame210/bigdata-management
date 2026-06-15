@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.bigdata.server.mapper.TaskInstanceMapper">
+
+
+    <select id="queryTaskTrend" resultType="org.bigdata.server.bean.vo.TaskTrendVO">
+        SELECT
+            DATE(create_time) AS "date",
+            COUNT(*) AS total,
+            SUM(CASE WHEN task_status = 3 THEN 1 ELSE 0 END) AS finished,
+            SUM(CASE WHEN task_status = 4 THEN 1 ELSE 0 END) AS failed
+        FROM task_instance
+        WHERE is_deleted = 0
+          AND create_time >= CURRENT_DATE - INTERVAL '1 day' * #{days}
+        GROUP BY DATE(create_time)
+        ORDER BY DATE(create_time) ASC
+    </select>
+
+    <select id="queryStatusDistribution" resultType="org.bigdata.server.bean.vo.StatusDistributionVO">
+        SELECT
+            task_status AS "status",
+            COUNT(*) AS count
+        FROM task_instance
+        WHERE is_deleted = 0
+        GROUP BY task_status
+        ORDER BY task_status ASC
+    </select>
+
+    <select id="page" resultType="org.bigdata.server.bean.entity.TaskInstance">
+        select
+            tis.id,
+            tis.task_id,
+            tis.task_name,
+            tis.task_instance_id,
+            ti.engine_type,
+            tis.task_type,
+            tis.cluster_metadata,
+            tis.task_mode,
+            tis.task_status,
+            tis.task_metadata,
+            tis.cluster_id,
+            tis.cluster_type,
+            tis.cluster_metadata,
+            tis.retry_count,
+            tis.root_instance_id,
+            tis.parent_instance_id,
+            tis.retry_scheduled,
+            tis.schedule_id,
+            tis.schedule_name,
+            tis.schedule_instance_name,
+            tis.launch_time,
+            tis.create_time,
+            tis.update_time,
+            ci.cluster_name
+        from task_instance tis
+        left join task_info ti on tis.task_id = ti.id
+        left join cluster_info ci on ci.id = tis.cluster_id
+        <where>
+            tis.is_deleted = 0
+            <if test="params.taskName != null and params.taskName != ''">
+                and tis.task_name like CONCAT('%', #{params.taskName}, '%')
+            </if>
+            <if test="params.engineType != null and params.engineType != ''">
+                and ti.engine_type = #{params.engineType}
+            </if>
+            <if test="params.clusterName != null and params.clusterName != ''">
+                and ci.cluster_name like CONCAT('%', #{params.clusterName}, '%')
+            </if>
+            <if test="params.taskMode != null and params.taskMode != ''">
+                and tis.task_mode = #{params.taskMode}
+            </if>
+            <if test="params.clusterType != null and params.clusterType != ''">
+                and tis.cluster_type = #{params.clusterType}
+            </if>
+        </where>
+        order by tis.create_time desc
+    </select>
+</mapper>
