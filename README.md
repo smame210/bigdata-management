@@ -4,6 +4,8 @@
 
 支持 Flink on YARN，架构上预留了更多计算引擎和集群模式的扩展能力。
 
+![Dashboard](images/overview.png)
+
 ## ✨ 特性
 
 - 集群管理：支持集群配置新增、查看、启停状态管理
@@ -13,6 +15,8 @@
 - 告警能力：支持告警策略与告警信息管理，事件驱动通知
 - 用户管理：JWT 认证体系，用户启停、密码重置
 - 数据看板：首页仪表盘，实时统计与趋势图
+
+![Task Management](images/task_managent.png)
 
 ## 🧱 技术栈
 
@@ -32,6 +36,8 @@
 - Ant Design Vue
 - Pinia
 - UnoCSS
+
+> 前端基于 [Soybean Admin](https://github.com/soybeanjs/soybean-admin) 构建。
 
 ## 🏗️ 项目结构
 
