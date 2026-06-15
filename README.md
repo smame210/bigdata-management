@@ -117,7 +117,7 @@ chmod +x scripts/release/build-image.sh
 scripts/release/build-image.sh
 ```
 
-更多参数请查看：`docs/BUILD_IMAGE.md`
+更多参数请查看 [镜像构建指南](docs/BUILD_IMAGE.md)
 
 ### 2) 运行容器
 

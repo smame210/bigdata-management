@@ -9,6 +9,7 @@ IMAGE_TAG="latest"
 DOCKERFILE="docker/Dockerfile"
 BASE_URL="/"
 NO_CACHE="false"
+PLATFORM="linux/amd64"
 
 usage() {
   cat <<'EOF'
@@ -19,6 +20,7 @@ Options:
   --tag <tag>            Docker image tag (default: latest)
   --base-url <url>       Override VITE_SERVICE_BASE_URL for frontend build
   --dockerfile <path>    Dockerfile path relative to repo root (default: docker/Dockerfile)
+  --platform <platform>  Target platform (default: linux/amd64)
   --no-cache             Build docker image with --no-cache
   -h, --help             Show this help message
 EOF
@@ -40,6 +42,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --dockerfile)
       DOCKERFILE="$2"
+      shift 2
+      ;;
+    --platform)
+      PLATFORM="$2"
       shift 2
       ;;
     --no-cache)
@@ -75,13 +81,13 @@ rm -rf "$ROOT_DIR/bigdata-server/src/main/resources/static"
 mkdir -p "$ROOT_DIR/bigdata-server/src/main/resources/static"
 cp -R "$ROOT_DIR/bigdata-ui/dist/." "$ROOT_DIR/bigdata-server/src/main/resources/static/"
 
-echo "[3/4] Package backend jar"
+echo "[4/4] Package backend jar"
 (
   cd "$ROOT_DIR"
   mvn -pl bigdata-server -am -DskipTests clean package
 )
 
-echo "[4/4] Build docker image"
+echo "[5/5] Build docker image"
 DOCKER_BUILD_ARGS=(build)
 
 if [[ "$NO_CACHE" == "true" ]]; then
@@ -89,6 +95,7 @@ if [[ "$NO_CACHE" == "true" ]]; then
 fi
 
 DOCKER_BUILD_ARGS+=(
+  --platform "$PLATFORM"
   -f "$DOCKERFILE"
   -t "${IMAGE_NAME}:${IMAGE_TAG}"
   .
